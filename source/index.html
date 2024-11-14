@@ -1,0 +1,48 @@
+<!--
+ MIT License
+ Copyright (c) 2024 Oscar Rodriguez Parra
+ For full license details, see the LICENSE file in the project root.
+-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+    <title>Carta L105 del PER</title>
+    <!-- Vincula el archivo CSS externo -->
+    <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+    <div id="panel">
+		<div id="latitud" class="coordenadas"></div>
+		<div id="longitud" class="coordenadas"></div>
+		<div class="autor">Realizado por<br>Óscar Rodríguez Parra<br><a href="mailto:oscar@sistemasorp.es">oscar@sistemasorp.es</a><br>para lás prácticas de carta del PER.<br>Licencia MIT</div>
+	</div>
+	<div id="opciones">
+		<fieldset>
+			<legend>Color:</legend>
+			<input type="radio" id="rojo" name="color" value="red" checked />
+			<label for="rojo">Rojo</label>
+			<input type="radio" id="verde" name="color" value="green" />
+			<label for="verde">Verde</label>
+			<input type="radio" id="azul" name="color" value="blue" />
+			<label for="azul">Azul</label>
+			<input type="radio" id="naranja" name="color" value="orange" />
+			<label for="naranja">Naranja</label>
+		</fieldset>
+		<div class="opcion"><input type="button" id="vertical" value="Barra vertical"></div>
+		<div class="opcion"><input type="button" id="horizontal" value="Barra horizontal"></div>
+		<div class="opcion"><input type="button" id="enfilacion" value="Enfilación"></div>
+		<div class="opcion"><input type="button" id="oposicion" value="Oposición"></div>
+		<div class="opcion"><input type="button" id="distancia" value="Distancia circular"></div>
+		<div><input type="text" id="distancia_c"></div>
+		<div class="opcion"><input type="button" id="distancia_r" value="Distancia recta y ángulo"></div>
+		<div class="opcion"><input type="button" id="demora" value="Demora"></div>
+		<div><input type="text" id="demora_v"></div>
+		<div class="opcion"><input type="button" id="borrar" class="accion" value="Borrar todo"></div>
+		<div class="opcion"><input type="button" id="esconder" class="accion" value="Esconder"></div>
+	</div>
+	<canvas id="carta"></canvas>
+	<script src="codigo.js"></script>
+</body>
+</html>

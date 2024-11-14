@@ -1,0 +1,95 @@
+/*
+ MIT License
+ Copyright (c) 2024 Oscar Rodriguez Parra
+ For full license details, see the LICENSE file in the project root.
+*/
+
+body, html {
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	width: 100%;
+	height: 100%;
+}
+
+input[type=button] {
+	background-color: #0050F0;
+	color: white;
+	width: 17rem;
+	font-family: Arial;
+	font-size: 0.8rem;
+}
+
+input[type=text] {
+	width: 16.4rem;
+	font-family: Arial;
+	font-size: 0.8rem;
+}
+
+.opcion {
+	margin-top: 2px;
+}
+
+.accion {
+	background-color: #903030 !important;
+}
+
+.coordenadas {
+	font-family: Arial;
+	font-size: 1.5rem;
+	width: 100%;
+	text-align: center;
+}
+
+.autor {
+	margin-top: 1rem;
+	font-family: Arial;
+	font-size: 0.8rem;
+	width: 100%;
+	text-align: center;
+	
+}
+
+#carta {
+	display: block;
+}
+
+#opciones {
+	top: 0px;
+	left: 0px;
+	background: white;
+	font-family: Arial;
+	font-size: 0.8rem;
+	position: absolute;
+	width: 17rem;
+	border-width:2px;
+	border-style: solid;
+	display: none;
+}
+
+#rojo + label {
+	color: red;
+}
+
+#verde + label {
+	color: green;
+}
+
+#azul + label {
+	color: blue;
+}
+
+#naranja + label {
+	color: orange;
+}
+
+#panel {
+	position:absolute;
+	background-color: white;
+	border-width:2px;
+	border-style: solid;
+	width: 11rem;
+	height: 10.5rem;
+	top: 0px;
+	right: 0px;
+}
