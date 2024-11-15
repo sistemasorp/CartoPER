@@ -113,12 +113,10 @@ function calcularPendienteEnGrados(x1, y1, x2, y2) {
 }
 
 // Calcula cual es la posición del borde del mapa según la recta formada por un punto y un ángulo
-function calcularBordesMapa(xInicio, yInicio, angulo)
-{
+function calcularBordesMapa(xInicio, yInicio, angulo) {
 	let xFinal, yFinal;
-	
-	
 	let angulo_corregido = angulo
+	
 	// Calcular el grado opuesto
 	if(angulo < 0)	{
 		angulo = Math.abs(angulo);
@@ -175,8 +173,7 @@ function calcularBordesMapa(xInicio, yInicio, angulo)
 }
 
 // Formatea las líneas de posición
-function  prepararLineas(color)
-{
+function  prepararLineas(color) {
 	ctx.strokeStyle = color;
 	ctx.lineWidth = grosorLinea * escala; // Grosor de la línea ajustado según la escala
 	ctx.lineCap = "round"; // Mejora el acabado de las líneas
@@ -345,8 +342,22 @@ canvas.addEventListener('mousedown', (event) => {
 			if(dentroDelMapa())	{
 				if(!mostrandoRuta) {
 					let opciones = document.getElementById("opciones");
-					opciones.style.left = event.clientX + "px";
-					opciones.style.top = event.clientY + "px";
+					opciones.style.display = "block";
+					let anchura = parseInt(window.getComputedStyle(opciones).getPropertyValue("width"));
+					let altura = parseInt(window.getComputedStyle(opciones).getPropertyValue("height"));
+					let x = mouseX;
+					let y = mouseY;
+					
+					if((x + anchura) > canvas.width) {
+						x = canvas.width - anchura;
+					}
+					
+					if((y + altura) > canvas.height) {
+						y = canvas.height - altura;
+					}
+
+					opciones.style.left = x + "px";
+					opciones.style.top = y + "px";
 					opciones.style.display = "block";
 					mostrandoOpciones = true;
 				} else {
@@ -357,6 +368,7 @@ canvas.addEventListener('mousedown', (event) => {
 			break;
 		// Solo inicia el arrastre si se presiona el botón central del ratón
 		case 1:
+		case 2:
 			estaArrastrando = true;
 			startX = event.clientX - xImagen;
 			startY = event.clientY - yImagen;
@@ -367,8 +379,7 @@ canvas.addEventListener('mousedown', (event) => {
 // 
 canvas.addEventListener('mousemove', (event) => {
 	// Si no se está mostrando la caja de opciones
-	if(!mostrandoOpciones)
-	{
+	if(!mostrandoOpciones) {
 		mouseX = event.clientX;
 		mouseY = event.clientY;
 		// Si se esta arrastrando el mapa
@@ -390,10 +401,14 @@ canvas.addEventListener('mousemove', (event) => {
 
 canvas.addEventListener('mouseup', () => {
 	// Ya ha terminado el arrastre del mapa
-	if (event.button === 1) {
+	if (event.button === 1 || event.button === 2) {
 		estaArrastrando = false;
 	}
 });
+
+document.addEventListener("contextmenu", function(e) {
+      e.preventDefault();
+    }, false);
 
 document.getElementById("borrar").addEventListener("click", () => {
 	figuras = [];
@@ -419,8 +434,7 @@ function recuperaColor() {
 	return document.querySelector('input[name="color"]:checked').value;
 }
 
-function dibujarLinea(tipo)
-{
+function dibujarLinea(tipo) {
 	// Convierte las coordenadas del clic en el sistema de coordenadas del mapa
 	let xMapa = (mouseX - xImagen) / escala - minMapaX;
 	let yMapa = (mouseY - yImagen) / escala - minMapaY;
@@ -448,7 +462,7 @@ function esNumeroDecimal(cadena) {
 
 document.getElementById("distancia").addEventListener("click", () => {
 	let valor = document.getElementById("distancia_c").value.replace(",",".");
-	if(esNumeroDecimal(valor))	{
+	if(esNumeroDecimal(valor)) {
 		// Convierte las coordenadas del clic en el sistema de coordenadas del mapa
 		let xMapa = (mouseX - xImagen) / escala - minMapaX;
 		let yMapa = (mouseY - yImagen) / escala - minMapaY;
@@ -458,7 +472,7 @@ document.getElementById("distancia").addEventListener("click", () => {
 			"tipo": "circulo",
 			"x": xMapa,
 			"y": yMapa,
-			"radio": parseFloat(valor) * minutoLAT,  // Radio de 20 píxeles en escala
+			"radio": Math.abs(parseFloat(valor) * minutoLAT),  // Radio de 20 píxeles en escala
 			"color": recuperaColor()
 		});
 		// Oculta el menú de opciones y redibuja el mapa
@@ -493,9 +507,7 @@ document.getElementById("demora").addEventListener("click", () => {
 		} else {
 			alert(alerta);
 		}
-    }
-	else
-	{
+    } else {
 		alert(alerta);
 	}
 });
@@ -514,5 +526,3 @@ document.getElementById("distancia_r").addEventListener("click", () => {
 	mostrandoRuta = true;
 	dibujarLinea("distancia_r");
 });
-
-
