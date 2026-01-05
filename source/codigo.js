@@ -116,11 +116,7 @@ function calcularPendienteEnGrados(x1, y1, x2, y2) {
 function calcularBordesMapa(xInicio, yInicio, angulo) {
 	let xFinal, yFinal;
 	let angulo_corregido = angulo
-<<<<<<< HEAD
 
-=======
-
->>>>>>> f4dc7758c47893d42a16a2de5ca3ca7ed940e0d9
 	// Calcular el grado opuesto
 	if (angulo < 0) {
 		angulo = Math.abs(angulo);
@@ -177,11 +173,7 @@ function calcularBordesMapa(xInicio, yInicio, angulo) {
 }
 
 // Formatea las líneas de posición
-<<<<<<< HEAD
 function prepararLineas(color) {
-=======
-function  prepararLineas(color) {
->>>>>>> f4dc7758c47893d42a16a2de5ca3ca7ed940e0d9
 	ctx.strokeStyle = color;
 	ctx.lineWidth = grosorLinea * escala; // Grosor de la línea ajustado según la escala
 	ctx.lineCap = "round"; // Mejora el acabado de las líneas
@@ -424,11 +416,7 @@ canvas.addEventListener("touchstart", (event) => {
 // 
 canvas.addEventListener('mousemove', (event) => {
 	// Si no se está mostrando la caja de opciones
-<<<<<<< HEAD
 	if (!mostrandoOpciones) {
-=======
-	if(!mostrandoOpciones) {
->>>>>>> f4dc7758c47893d42a16a2de5ca3ca7ed940e0d9
 		mouseX = event.clientX;
 		mouseY = event.clientY;
 		// Si se esta arrastrando el mapa
@@ -511,11 +499,7 @@ document.getElementById("borrar_u").addEventListener("click", () => {
 	ocultarOpciones();
 	dibujarImagen();
 });
-=======
-document.addEventListener("contextmenu", function(e) {
-      e.preventDefault();
-    }, false);
->>>>>>> f4dc7758c47893d42a16a2de5ca3ca7ed940e0d9
+
 
 document.getElementById("borrar").addEventListener("click", () => {
 	figuras = [];
@@ -564,13 +548,8 @@ function esNumeroDecimal(cadena) {
 }
 
 document.getElementById("distancia").addEventListener("click", () => {
-<<<<<<< HEAD
 	let valor = document.getElementById("distancia_c").value.replace(",", ".");
 	if (esNumeroDecimal(valor)) {
-=======
-	let valor = document.getElementById("distancia_c").value.replace(",",".");
-	if(esNumeroDecimal(valor)) {
->>>>>>> f4dc7758c47893d42a16a2de5ca3ca7ed940e0d9
 		// Convierte las coordenadas del clic en el sistema de coordenadas del mapa
 		let xMapa = (mouseX - xImagen) / escala - minMapaX;
 		let yMapa = (mouseY - yImagen) / escala - minMapaY;
@@ -615,11 +594,7 @@ document.getElementById("demora").addEventListener("click", () => {
 		} else {
 			alert(alerta);
 		}
-<<<<<<< HEAD
 	} else {
-=======
-    } else {
->>>>>>> f4dc7758c47893d42a16a2de5ca3ca7ed940e0d9
 		alert(alerta);
 	}
 });
