@@ -34,51 +34,51 @@ let figuras = [];
 // Cargar la imagen
 const imagen = new Image();
 imagen.onload = () => {
-    imagenAncho = imagen.width;
-    imagenAlto = imagen.height;
-    ajustarImagenInicial();
+	imagenAncho = imagen.width;
+	imagenAlto = imagen.height;
+	ajustarImagenInicial();
 };
 imagen.src = 'carta.jpg';
 
 // Ajusta el tamaño del canvas al tamaño de la ventana
 function ajustarCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
 }
 
 // Escala y centra la imagen inicialmente para que se vea completa
 function ajustarImagenInicial() {
-    const canvasRatio = canvas.width / canvas.height;
-    const imagenRatio = imagen.width / imagen.height;
+	const canvasRatio = canvas.width / canvas.height;
+	const imagenRatio = imagen.width / imagen.height;
 
-    if (imagenRatio > canvasRatio) {
-        escala = canvas.width / imagen.width;
-        xImagen = 0;
-        yImagen = (canvas.height - imagen.height * escala) / 2;  // Centrar verticalmente
-    } else {
-        escala = canvas.height / imagen.height;
-        xImagen = (canvas.width - imagen.width * escala) / 2;    // Centrar horizontalmente
-        yImagen = 0;
-    }
-    minZoom = escala;
-    dibujarImagen();
+	if (imagenRatio > canvasRatio) {
+		escala = canvas.width / imagen.width;
+		xImagen = 0;
+		yImagen = (canvas.height - imagen.height * escala) / 2;  // Centrar verticalmente
+	} else {
+		escala = canvas.height / imagen.height;
+		xImagen = (canvas.width - imagen.width * escala) / 2;    // Centrar horizontalmente
+		yImagen = 0;
+	}
+	minZoom = escala;
+	dibujarImagen();
 }
 
 // Dibuja la imagen con la escala y posición actuales
 function dibujarImagen() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(imagen, xImagen, yImagen, imagen.width * escala, imagen.height * escala);
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	ctx.drawImage(imagen, xImagen, yImagen, imagen.width * escala, imagen.height * escala);
 	dibujarCaja();
 	dibujarFiguras();
-	
+
 }
 
 // Indica si el ratón está dentro del área del mapa
 function dentroDelMapa() {
-	if(mouseX >= (xImagen + minMapaX * escala) && 
-		mouseX <= (xImagen + maxMapaX * escala) && 
+	if (mouseX >= (xImagen + minMapaX * escala) &&
+		mouseX <= (xImagen + maxMapaX * escala) &&
 		mouseY >= (yImagen + minMapaY * escala)
-		&& mouseY <= (yImagen + maxMapaY * escala))	{
+		&& mouseY <= (yImagen + maxMapaY * escala)) {
 		return true;
 	} else {
 		return false;
@@ -89,39 +89,39 @@ function dentroDelMapa() {
 function dibujarCaja() {
 
 	// Solo se muestra la latitud y longitud cuando se está dentro del mapa
-	if(dentroDelMapa())	{
+	if (dentroDelMapa()) {
 		// Se halla la latitud pasando todo a decimas de segundo
 		let latitud = 36 * 6000 + 2000 - ((mouseY - (yImagen + minMapaY * escala)) / (minutoLAT * escala)).toFixed(4) * 100;
 		let minutos = Math.floor(latitud % 6000 / 100);
-		document.getElementById("latitud").innerHTML = "l: " + Math.floor(latitud / 6000) + "º " + minutos.toLocaleString('es-ES', {minimumIntegerDigits: 2, useGrouping:false}) + "' " + Math.floor((Math.floor(latitud % 6000) - minutos * 100) / 10) + " N";
+		document.getElementById("latitud").innerHTML = "l: " + Math.floor(latitud / 6000) + "º " + minutos.toLocaleString('es-ES', { minimumIntegerDigits: 2, useGrouping: false }) + "' " + Math.floor((Math.floor(latitud % 6000) - minutos * 100) / 10) + " N";
 		let longitud = 6 * 6000 + 2000 - ((mouseX - (xImagen + minMapaX * escala)) / (minutoLON * escala)).toFixed(4) * 100;
 		minutos = Math.floor(longitud % 6000 / 100);
-		document.getElementById("longitud").innerHTML = "L: " + Math.floor(longitud / 6000).toLocaleString('es-ES', {minimumIntegerDigits: 3, useGrouping:false}) + "º " + minutos.toLocaleString('es-ES', {minimumIntegerDigits: 2, useGrouping:false}) + "' " + Math.floor((Math.floor(longitud % 6000) - minutos * 100) / 10) + " W";;
+		document.getElementById("longitud").innerHTML = "L: " + Math.floor(longitud / 6000).toLocaleString('es-ES', { minimumIntegerDigits: 3, useGrouping: false }) + "º " + minutos.toLocaleString('es-ES', { minimumIntegerDigits: 2, useGrouping: false }) + "' " + Math.floor((Math.floor(longitud % 6000) - minutos * 100) / 10) + " W";;
 	}
-	
+
 }
 
 // Devolver el angulo en grados que hay en la recta formada por dos puntos
 function calcularPendienteEnGrados(x1, y1, x2, y2) {
-    // Calcular el ángulo en radianes usando Math.atan2()
-    let anguloRad = Math.atan2(y2 - y1, x2 - x1);
-    
-    // Convertir el ángulo a grados
-    let anguloGrados = anguloRad * 180 / Math.PI;
-	
-    return anguloGrados;
+	// Calcular el ángulo en radianes usando Math.atan2()
+	let anguloRad = Math.atan2(y2 - y1, x2 - x1);
+
+	// Convertir el ángulo a grados
+	let anguloGrados = anguloRad * 180 / Math.PI;
+
+	return anguloGrados;
 }
 
 // Calcula cual es la posición del borde del mapa según la recta formada por un punto y un ángulo
 function calcularBordesMapa(xInicio, yInicio, angulo) {
 	let xFinal, yFinal;
 	let angulo_corregido = angulo
-	
+
 	// Calcular el grado opuesto
-	if(angulo < 0)	{
+	if (angulo < 0) {
 		angulo = Math.abs(angulo);
-		if(angulo > 180) {
-			angulo_corregido =  angulo - 180;
+		if (angulo > 180) {
+			angulo_corregido = angulo - 180;
 		} else {
 			angulo_corregido = angulo + 180;
 		}
@@ -167,13 +167,13 @@ function calcularBordesMapa(xInicio, yInicio, angulo) {
 			xFinal = xInicio + (yFinal - yInicio) / pendiente;
 		}
 	}
-	
+
 	return [xFinal, yFinal];
-	
+
 }
 
 // Formatea las líneas de posición
-function  prepararLineas(color) {
+function prepararLineas(color) {
 	ctx.strokeStyle = color;
 	ctx.lineWidth = grosorLinea * escala; // Grosor de la línea ajustado según la escala
 	ctx.lineCap = "round"; // Mejora el acabado de las líneas
@@ -189,8 +189,8 @@ function dibujarFiguras() {
 
 	let xInicio, yInicio, xFinal, yFinal;
 
-	figuras.forEach(function(figura) {
-		switch(figura.tipo) {
+	figuras.forEach(function (figura) {
+		switch (figura.tipo) {
 			case "vertical":
 				prepararLineas(figura.color);
 				// Calcula la posición X y Y de los bordes del mapa escalados
@@ -216,23 +216,23 @@ function dibujarFiguras() {
 				ctx.stroke();
 				break;
 			case "circulo":
-                prepararLineas(figura.color);
-                ctx.beginPath();
-                // Calcular las coordenadas y el radio escalado del círculo
-                let xCentro = (figura.x + minMapaX) * escala;
-                let yCentro = (figura.y + minMapaY) * escala;
-                let radioEscalado = figura.radio * escala;  // Radio ajustado a la escala actual
-                ctx.arc(xCentro, yCentro, radioEscalado, 0, 2 * Math.PI);
-                ctx.stroke();
-                ctx.closePath();
-                break;		
+				prepararLineas(figura.color);
+				ctx.beginPath();
+				// Calcular las coordenadas y el radio escalado del círculo
+				let xCentro = (figura.x + minMapaX) * escala;
+				let yCentro = (figura.y + minMapaY) * escala;
+				let radioEscalado = figura.radio * escala;  // Radio ajustado a la escala actual
+				ctx.arc(xCentro, yCentro, radioEscalado, 0, 2 * Math.PI);
+				ctx.stroke();
+				ctx.closePath();
+				break;
 			case "demora":
 				prepararLineas(figura.color);
 
 				// Punto de origen (centro de la demora) en el mapa escalado
 				xInicio = (figura.x + minMapaX) * escala;
 				yInicio = (figura.y + minMapaY) * escala;
-				
+
 				bordes = calcularBordesMapa(xInicio, yInicio, figura.angulo);
 				xFinal = bordes[0];
 				yFinal = bordes[1];
@@ -252,12 +252,12 @@ function dibujarFiguras() {
 				yInicio = Math.round((figura.y + minMapaY) * escala);
 				xFinal = Math.round((figura.x2 + minMapaX) * escala);
 				yFinal = Math.round((figura.y2 + minMapaY) * escala);
-				if(figura.tipo == "enfilacion") {
+				if (figura.tipo == "enfilacion") {
 					let angulo = calcularPendienteEnGrados(xInicio, yInicio, xFinal, yFinal) + 90;
 					if (angulo < 0) {
 						angulo += 360;
 					}
-					else if(angulo > 360) {
+					else if (angulo > 360) {
 						angulo -= 360;
 					}
 					bordes = calcularBordesMapa(xInicio, yInicio, -angulo);
@@ -277,14 +277,14 @@ function dibujarFiguras() {
 					ctx.moveTo(xInicio, yInicio);
 					ctx.lineTo(xFinal, yFinal);
 					ctx.stroke();
-					if(figura.tipo == "distancia_r") {
+					if (figura.tipo == "distancia_r") {
 						// Calcular distancia y ángulo
-						let distanciaPx = (Math.sqrt(Math.pow((xFinal - xInicio) / escala, 2) + Math.pow((yFinal - yInicio) / escala , 2)) / minutoLAT);
+						let distanciaPx = (Math.sqrt(Math.pow((xFinal - xInicio) / escala, 2) + Math.pow((yFinal - yInicio) / escala, 2)) / minutoLAT);
 						angulo = calcularPendienteEnGrados(xInicio, yInicio, xFinal, yFinal) + 90;
 						if (angulo < 0) {
 							angulo += 360;
 						}
-						else if(angulo > 360) {
+						else if (angulo > 360) {
 							angulo -= 360;
 						}
 						// Dibujar texto en el canvas justo por encima de la línea
@@ -296,7 +296,7 @@ function dibujarFiguras() {
 				break;
 		}
 	});
-	
+
 	ctx.restore();
 }
 
@@ -308,48 +308,47 @@ ajustarCanvas();
 
 // Redimensiona el canvas automáticamente y redibuja la imagen al cambiar el tamaño de la ventana
 window.addEventListener('resize', () => {
-    ajustarCanvas();
-    ajustarImagenInicial();
+	ajustarCanvas();
+	ajustarImagenInicial();
 });
 
 // Añade un escuchador para el evento de la rueda del ratón para hacer zoom
 canvas.addEventListener('wheel', (event) => {
-    event.preventDefault();
+	event.preventDefault();
 
-    let nuevaEscala = escala + (event.deltaY < 0 ? zoomPaso : -zoomPaso);
-    nuevaEscala = Math.max(minZoom, Math.min(maxZoom, nuevaEscala));
+	let nuevaEscala = escala + (event.deltaY < 0 ? zoomPaso : -zoomPaso);
+	nuevaEscala = Math.max(minZoom, Math.min(maxZoom, nuevaEscala));
 
-    const rect = canvas.getBoundingClientRect();
-    const mouseX = event.clientX - rect.left;
-    const mouseY = event.clientY - rect.top;
+	const rect = canvas.getBoundingClientRect();
+	const mouseX = event.clientX - rect.left;
+	const mouseY = event.clientY - rect.top;
 
-    xImagen -= (mouseX - xImagen) * (nuevaEscala - escala) / escala;
-    yImagen -= (mouseY - yImagen) * (nuevaEscala - escala) / escala;
+	xImagen -= (mouseX - xImagen) * (nuevaEscala - escala) / escala;
+	yImagen -= (mouseY - yImagen) * (nuevaEscala - escala) / escala;
 
-    const maxX = (canvas.width - imagen.width * nuevaEscala) / 2;
-    const maxY = (canvas.height - imagen.height * nuevaEscala) / 2;
+	const maxX = (canvas.width - imagen.width * nuevaEscala) / 2;
+	const maxY = (canvas.height - imagen.height * nuevaEscala) / 2;
 
-    escala = nuevaEscala;
-    dibujarImagen();
+	escala = nuevaEscala;
+	dibujarImagen();
 });
 
-function muestraMenu()
-{
+function muestraMenu() {
 	// Si esta dentro del mapa, muestra las coordenadas
-	if(dentroDelMapa())	{
-		if(!mostrandoRuta) {
+	if (dentroDelMapa()) {
+		if (!mostrandoRuta) {
 			let opciones = document.getElementById("opciones");
 			opciones.style.display = "block";
 			let anchura = parseInt(window.getComputedStyle(opciones).getPropertyValue("width"));
 			let altura = parseInt(window.getComputedStyle(opciones).getPropertyValue("height"));
 			let x = mouseX;
 			let y = mouseY;
-			
-			if((x + anchura) > canvas.width) {
+
+			if ((x + anchura) > canvas.width) {
 				x = canvas.width - anchura;
 			}
-			
-			if((y + altura) > canvas.height) {
+
+			if ((y + altura) > canvas.height) {
 				y = canvas.height - altura;
 			}
 
@@ -360,11 +359,10 @@ function muestraMenu()
 		} else {
 			mostrandoRuta = false;
 		}
-	}	
+	}
 }
 
-function mueveMapa()
-{
+function mueveMapa() {
 	estaArrastrando = true;
 	startX = mouseX - xImagen;
 	startY = mouseY - yImagen;
@@ -374,9 +372,9 @@ function mueveMapa()
 
 canvas.addEventListener('mousedown', (event) => {
 	mouseX = event.clientX;
-	mouseY = event.clientY;    
-	
-    switch (event.button) {
+	mouseY = event.clientY;
+
+	switch (event.button) {
 		case 0:
 			muestraMenu();
 			break;
@@ -385,41 +383,40 @@ canvas.addEventListener('mousedown', (event) => {
 		case 2:
 			mueveMapa();
 			break;
-    }
+	}
 });
 
 // Variables para gestos táctiles
-let inicioDistancia = 0; 
+let inicioDistancia = 0;
 
 canvas.addEventListener("touchstart", (event) => {
-    event.preventDefault();
+	event.preventDefault();
 	let touch = event.touches[0];
 	mouseX = touch.clientX;
 	mouseY = touch.clientY;
-	
 
-    switch(event.touches.length)
-	{
+
+	switch (event.touches.length) {
 		case 1:
 			muestraMenu();
 			break;
 		case 2:
 			mueveMapa();
 			break;
-		
-/*
-        // Guardar la distancia inicial entre los dos dedos para hacer zoom
-        let dx = event.touches[0].clientX - event.touches[1].clientX;
-        let dy = event.touches[0].clientY - event.touches[1].clientY;
-        inicioDistancia = Math.sqrt(dx * dx + dy * dy);
-*/
-    }
+
+		/*
+				// Guardar la distancia inicial entre los dos dedos para hacer zoom
+				let dx = event.touches[0].clientX - event.touches[1].clientX;
+				let dy = event.touches[0].clientY - event.touches[1].clientY;
+				inicioDistancia = Math.sqrt(dx * dx + dy * dy);
+		*/
+	}
 });
 
 // 
 canvas.addEventListener('mousemove', (event) => {
 	// Si no se está mostrando la caja de opciones
-	if(!mostrandoOpciones) {
+	if (!mostrandoOpciones) {
 		mouseX = event.clientX;
 		mouseY = event.clientY;
 		// Si se esta arrastrando el mapa
@@ -440,33 +437,33 @@ canvas.addEventListener('mousemove', (event) => {
 
 // continuar
 canvas.addEventListener("touchmove", (event) => {
-    event.preventDefault();
+	event.preventDefault();
 
-    if (event.touches.length === 2) {
-        let dx = event.touches[0].clientX - event.touches[1].clientX;
-        let dy = event.touches[0].clientY - event.touches[1].clientY;
-        let nuevaDistancia = Math.sqrt(dx * dx + dy * dy);
+	if (event.touches.length === 2) {
+		let dx = event.touches[0].clientX - event.touches[1].clientX;
+		let dy = event.touches[0].clientY - event.touches[1].clientY;
+		let nuevaDistancia = Math.sqrt(dx * dx + dy * dy);
 
-        // Zoom con dos dedos (pellizco)
-        let factorZoom = nuevaDistancia / inicioDistancia;
-        let nuevaEscala = escala * factorZoom;
-        nuevaEscala = Math.max(minZoom, Math.min(maxZoom, nuevaEscala));
+		// Zoom con dos dedos (pellizco)
+		let factorZoom = nuevaDistancia / inicioDistancia;
+		let nuevaEscala = escala * factorZoom;
+		nuevaEscala = Math.max(minZoom, Math.min(maxZoom, nuevaEscala));
 
-        let centroX = (event.touches[0].clientX + event.touches[1].clientX) / 2;
-        let centroY = (event.touches[0].clientY + event.touches[1].clientY) / 2;
+		let centroX = (event.touches[0].clientX + event.touches[1].clientX) / 2;
+		let centroY = (event.touches[0].clientY + event.touches[1].clientY) / 2;
 
-        xImagen -= (centroX - xImagen) * (nuevaEscala - escala) / escala;
-        yImagen -= (centroY - yImagen) * (nuevaEscala - escala) / escala;
+		xImagen -= (centroX - xImagen) * (nuevaEscala - escala) / escala;
+		yImagen -= (centroY - yImagen) * (nuevaEscala - escala) / escala;
 
-        escala = nuevaEscala;
-        inicioDistancia = nuevaDistancia;
-        dibujarImagen();
-    } else if (tocando && event.touches.length === 2) {
-        // Mover el mapa con dos dedos juntos
-        xImagen = event.touches[0].clientX - startX;
-        yImagen = event.touches[0].clientY - startY;
-        dibujarImagen();
-    }
+		escala = nuevaEscala;
+		inicioDistancia = nuevaDistancia;
+		dibujarImagen();
+	} else if (tocando && event.touches.length === 2) {
+		// Mover el mapa con dos dedos juntos
+		xImagen = event.touches[0].clientX - startX;
+		yImagen = event.touches[0].clientY - startY;
+		dibujarImagen();
+	}
 });
 
 canvas.addEventListener('mouseup', () => {
@@ -477,17 +474,16 @@ canvas.addEventListener('mouseup', () => {
 });
 
 canvas.addEventListener("touchend", () => {
-    estaArrastrando = false;
+	estaArrastrando = false;
 });
 
-document.addEventListener("contextmenu", function(e) {
-      e.preventDefault();
-    }, false);
-	
+document.addEventListener("contextmenu", function (e) {
+	e.preventDefault();
+}, false);
+
 window.addEventListener("keyup", (evt) => {
 	if (evt.keyCode == 27) {
-		if(mostrandoRuta)
-		{
+		if (mostrandoRuta) {
 			mostrandoRuta = false;
 			figuras.pop();
 			dibujarImagen();
@@ -495,7 +491,7 @@ window.addEventListener("keyup", (evt) => {
 			ocultarOpciones();
 		}
 	}
-	
+
 });
 
 document.getElementById("borrar_u").addEventListener("click", () => {
@@ -530,8 +526,8 @@ function dibujarLinea(tipo) {
 	let yMapa = (mouseY - yImagen) / escala - minMapaY;
 
 	// Agrega la figura usando las coordenadas ajustadas
-	figuras.push({"tipo":tipo, "x": xMapa, "y": yMapa, "color": recuperaColor()});
-	
+	figuras.push({ "tipo": tipo, "x": xMapa, "y": yMapa, "color": recuperaColor() });
+
 	ocultarOpciones();
 	dibujarImagen();
 
@@ -547,16 +543,16 @@ document.getElementById("horizontal").addEventListener("click", () => {
 
 // Evita cadenas alfanuméricas
 function esNumeroDecimal(cadena) {
-    return /^[+-]?(\d+\.?\d*|\.\d+)$/.test(cadena);
+	return /^[+-]?(\d+\.?\d*|\.\d+)$/.test(cadena);
 }
 
 document.getElementById("distancia").addEventListener("click", () => {
-	let valor = document.getElementById("distancia_c").value.replace(",",".");
-	if(esNumeroDecimal(valor)) {
+	let valor = document.getElementById("distancia_c").value.replace(",", ".");
+	if (esNumeroDecimal(valor)) {
 		// Convierte las coordenadas del clic en el sistema de coordenadas del mapa
 		let xMapa = (mouseX - xImagen) / escala - minMapaX;
 		let yMapa = (mouseY - yImagen) / escala - minMapaY;
-		
+
 		// Agrega un círculo al array figuras
 		figuras.push({
 			"tipo": "circulo",
@@ -567,22 +563,22 @@ document.getElementById("distancia").addEventListener("click", () => {
 		});
 		// Oculta el menú de opciones y redibuja el mapa
 		ocultarOpciones();
-		dibujarImagen();	
-    } else {
+		dibujarImagen();
+	} else {
 		alert("Introduzca un número decimal que represente las millas");
 	}
 });
 
 document.getElementById("demora").addEventListener("click", () => {
 	const alerta = "Introduzca un número decimal que represente el grado de la demora entre -359 y 359";
-	let valor = document.getElementById("demora_v").value.replace(",",".");
-	if(esNumeroDecimal(valor)) {
+	let valor = document.getElementById("demora_v").value.replace(",", ".");
+	if (esNumeroDecimal(valor)) {
 		demora = parseFloat(valor);
-		if(demora > -360 || demora < 360) {
+		if (demora > -360 || demora < 360) {
 			// Convierte las coordenadas del clic en el sistema de coordenadas del mapa
 			let xMapa = (mouseX - xImagen) / escala - minMapaX;
 			let yMapa = (mouseY - yImagen) / escala - minMapaY;
-			
+
 			// Agrega una demora al array figuras
 			figuras.push({
 				"tipo": "demora",
@@ -593,11 +589,11 @@ document.getElementById("demora").addEventListener("click", () => {
 			});
 			// Oculta el menú de opciones y redibuja el mapa
 			ocultarOpciones();
-			dibujarImagen();	
+			dibujarImagen();
 		} else {
 			alert(alerta);
 		}
-    } else {
+	} else {
 		alert(alerta);
 	}
 });
