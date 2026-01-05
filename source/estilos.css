@@ -1,10 +1,11 @@
 /*
  MIT License
- Copyright (c) 2024 Oscar Rodriguez Parra
+ Copyright (c) 2024 Oscar Rodriguez
  For full license details, see the LICENSE file in the project root.
 */
 
-body, html {
+body,
+html {
 	margin: 0;
 	padding: 0;
 	overflow: hidden;
@@ -21,7 +22,7 @@ input[type=button] {
 }
 
 input[type=text] {
-	width: 16.4rem;
+	width: 7rem;
 	font-family: Arial;
 	font-size: 0.8rem;
 }
@@ -47,7 +48,11 @@ input[type=text] {
 	font-size: 0.8rem;
 	width: 100%;
 	text-align: center;
-	
+
+}
+
+.boton_texto {
+	width: 9.5rem !important;
 }
 
 #carta {
@@ -62,34 +67,35 @@ input[type=text] {
 	font-size: 0.8rem;
 	position: absolute;
 	width: 17rem;
-	border-width:2px;
+	border-width: 2px;
 	border-style: solid;
 	display: none;
 }
 
-#rojo + label {
+#rojo+label {
 	color: red;
 }
 
-#verde + label {
+#verde+label {
 	color: green;
 }
 
-#azul + label {
+#azul+label {
 	color: blue;
 }
 
-#naranja + label {
+#naranja+label {
 	color: orange;
 }
 
 #panel {
-	position:absolute;
+	position: absolute;
 	background-color: white;
-	border-width:2px;
+	border-width: 2px;
 	border-style: solid;
 	width: 11rem;
-	height: 10.5rem;
+	height: auto;
+	padding-bottom: 0.5rem;
 	top: 0px;
 	right: 0px;
 }

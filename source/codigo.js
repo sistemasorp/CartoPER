@@ -1,6 +1,6 @@
 /*
  MIT License
- Copyright (c) 2024 Oscar Rodriguez Parra
+ Copyright (c) 2024 Oscar Rodriguez
  For full license details, see the LICENSE file in the project root.
 */
 
@@ -113,12 +113,10 @@ function calcularPendienteEnGrados(x1, y1, x2, y2) {
 }
 
 // Calcula cual es la posición del borde del mapa según la recta formada por un punto y un ángulo
-function calcularBordesMapa(xInicio, yInicio, angulo)
-{
+function calcularBordesMapa(xInicio, yInicio, angulo) {
 	let xFinal, yFinal;
-	
-	
 	let angulo_corregido = angulo
+	
 	// Calcular el grado opuesto
 	if(angulo < 0)	{
 		angulo = Math.abs(angulo);
@@ -175,8 +173,7 @@ function calcularBordesMapa(xInicio, yInicio, angulo)
 }
 
 // Formatea las líneas de posición
-function  prepararLineas(color)
-{
+function  prepararLineas(color) {
 	ctx.strokeStyle = color;
 	ctx.lineWidth = grosorLinea * escala; // Grosor de la línea ajustado según la escala
 	ctx.lineCap = "round"; // Mejora el acabado de las líneas
@@ -336,39 +333,93 @@ canvas.addEventListener('wheel', (event) => {
     dibujarImagen();
 });
 
+function muestraMenu()
+{
+	// Si esta dentro del mapa, muestra las coordenadas
+	if(dentroDelMapa())	{
+		if(!mostrandoRuta) {
+			let opciones = document.getElementById("opciones");
+			opciones.style.display = "block";
+			let anchura = parseInt(window.getComputedStyle(opciones).getPropertyValue("width"));
+			let altura = parseInt(window.getComputedStyle(opciones).getPropertyValue("height"));
+			let x = mouseX;
+			let y = mouseY;
+			
+			if((x + anchura) > canvas.width) {
+				x = canvas.width - anchura;
+			}
+			
+			if((y + altura) > canvas.height) {
+				y = canvas.height - altura;
+			}
+
+			opciones.style.left = x + "px";
+			opciones.style.top = y + "px";
+			opciones.style.display = "block";
+			mostrandoOpciones = true;
+		} else {
+			mostrandoRuta = false;
+		}
+	}	
+}
+
+function mueveMapa()
+{
+	estaArrastrando = true;
+	startX = mouseX - xImagen;
+	startY = mouseY - yImagen;
+}
+
+
+
 canvas.addEventListener('mousedown', (event) => {
 	mouseX = event.clientX;
 	mouseY = event.clientY;    
+	
     switch (event.button) {
 		case 0:
-			// Si esta dentro del mapa, muestra las coordenadas
-			if(dentroDelMapa())	{
-				if(!mostrandoRuta) {
-					let opciones = document.getElementById("opciones");
-					opciones.style.left = event.clientX + "px";
-					opciones.style.top = event.clientY + "px";
-					opciones.style.display = "block";
-					mostrandoOpciones = true;
-				} else {
-					mostrandoRuta = false;
-				}
-				
-			}
+			muestraMenu();
 			break;
 		// Solo inicia el arrastre si se presiona el botón central del ratón
 		case 1:
-			estaArrastrando = true;
-			startX = event.clientX - xImagen;
-			startY = event.clientY - yImagen;
+		case 2:
+			mueveMapa();
 			break;
+    }
+});
+
+// Variables para gestos táctiles
+let inicioDistancia = 0; 
+
+canvas.addEventListener("touchstart", (event) => {
+    event.preventDefault();
+	let touch = event.touches[0];
+	mouseX = touch.clientX;
+	mouseY = touch.clientY;
+	
+
+    switch(event.touches.length)
+	{
+		case 1:
+			muestraMenu();
+			break;
+		case 2:
+			mueveMapa();
+			break;
+		
+/*
+        // Guardar la distancia inicial entre los dos dedos para hacer zoom
+        let dx = event.touches[0].clientX - event.touches[1].clientX;
+        let dy = event.touches[0].clientY - event.touches[1].clientY;
+        inicioDistancia = Math.sqrt(dx * dx + dy * dy);
+*/
     }
 });
 
 // 
 canvas.addEventListener('mousemove', (event) => {
 	// Si no se está mostrando la caja de opciones
-	if(!mostrandoOpciones)
-	{
+	if(!mostrandoOpciones) {
 		mouseX = event.clientX;
 		mouseY = event.clientY;
 		// Si se esta arrastrando el mapa
@@ -387,12 +438,70 @@ canvas.addEventListener('mousemove', (event) => {
 	}
 });
 
+// continuar
+canvas.addEventListener("touchmove", (event) => {
+    event.preventDefault();
+
+    if (event.touches.length === 2) {
+        let dx = event.touches[0].clientX - event.touches[1].clientX;
+        let dy = event.touches[0].clientY - event.touches[1].clientY;
+        let nuevaDistancia = Math.sqrt(dx * dx + dy * dy);
+
+        // Zoom con dos dedos (pellizco)
+        let factorZoom = nuevaDistancia / inicioDistancia;
+        let nuevaEscala = escala * factorZoom;
+        nuevaEscala = Math.max(minZoom, Math.min(maxZoom, nuevaEscala));
+
+        let centroX = (event.touches[0].clientX + event.touches[1].clientX) / 2;
+        let centroY = (event.touches[0].clientY + event.touches[1].clientY) / 2;
+
+        xImagen -= (centroX - xImagen) * (nuevaEscala - escala) / escala;
+        yImagen -= (centroY - yImagen) * (nuevaEscala - escala) / escala;
+
+        escala = nuevaEscala;
+        inicioDistancia = nuevaDistancia;
+        dibujarImagen();
+    } else if (tocando && event.touches.length === 2) {
+        // Mover el mapa con dos dedos juntos
+        xImagen = event.touches[0].clientX - startX;
+        yImagen = event.touches[0].clientY - startY;
+        dibujarImagen();
+    }
+});
 
 canvas.addEventListener('mouseup', () => {
 	// Ya ha terminado el arrastre del mapa
-	if (event.button === 1) {
+	if (event.button === 1 || event.button === 2) {
 		estaArrastrando = false;
 	}
+});
+
+canvas.addEventListener("touchend", () => {
+    estaArrastrando = false;
+});
+
+document.addEventListener("contextmenu", function(e) {
+      e.preventDefault();
+    }, false);
+	
+window.addEventListener("keyup", (evt) => {
+	if (evt.keyCode == 27) {
+		if(mostrandoRuta)
+		{
+			mostrandoRuta = false;
+			figuras.pop();
+			dibujarImagen();
+		} else {
+			ocultarOpciones();
+		}
+	}
+	
+});
+
+document.getElementById("borrar_u").addEventListener("click", () => {
+	figuras.pop();
+	ocultarOpciones();
+	dibujarImagen();
 });
 
 document.getElementById("borrar").addEventListener("click", () => {
@@ -411,16 +520,11 @@ document.getElementById("esconder").addEventListener("click", () => {
 	ocultarOpciones();
 });
 
-window.addEventListener("keyup", (evt) => {
-	if (evt.keyCode == 27) ocultarOpciones();
-});
-
 function recuperaColor() {
 	return document.querySelector('input[name="color"]:checked').value;
 }
 
-function dibujarLinea(tipo)
-{
+function dibujarLinea(tipo) {
 	// Convierte las coordenadas del clic en el sistema de coordenadas del mapa
 	let xMapa = (mouseX - xImagen) / escala - minMapaX;
 	let yMapa = (mouseY - yImagen) / escala - minMapaY;
@@ -448,7 +552,7 @@ function esNumeroDecimal(cadena) {
 
 document.getElementById("distancia").addEventListener("click", () => {
 	let valor = document.getElementById("distancia_c").value.replace(",",".");
-	if(esNumeroDecimal(valor))	{
+	if(esNumeroDecimal(valor)) {
 		// Convierte las coordenadas del clic en el sistema de coordenadas del mapa
 		let xMapa = (mouseX - xImagen) / escala - minMapaX;
 		let yMapa = (mouseY - yImagen) / escala - minMapaY;
@@ -458,7 +562,7 @@ document.getElementById("distancia").addEventListener("click", () => {
 			"tipo": "circulo",
 			"x": xMapa,
 			"y": yMapa,
-			"radio": parseFloat(valor) * minutoLAT,  // Radio de 20 píxeles en escala
+			"radio": Math.abs(parseFloat(valor) * minutoLAT),  // Radio de 20 píxeles en escala
 			"color": recuperaColor()
 		});
 		// Oculta el menú de opciones y redibuja el mapa
@@ -493,9 +597,7 @@ document.getElementById("demora").addEventListener("click", () => {
 		} else {
 			alert(alerta);
 		}
-    }
-	else
-	{
+    } else {
 		alert(alerta);
 	}
 });
@@ -514,5 +616,3 @@ document.getElementById("distancia_r").addEventListener("click", () => {
 	mostrandoRuta = true;
 	dibujarLinea("distancia_r");
 });
-
-
